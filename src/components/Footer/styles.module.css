@@ -1,0 +1,36 @@
+.footer {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  padding: 10px 15px;
+  background: #d1d0d0;
+  border: solid 3px;
+  border-bottom-color: #b6b5b5;
+  border-right-color: #b6b5b5;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+}
+
+.footer_dark {
+  background-color: #444343;
+  border-bottom-color: #000000;
+  border-right-color: #000000;
+  border-top-color: #b6b5b5;
+  border-left-color: #b6b5b5;
+}
+
+.button {
+  width: 35px;
+  height: 35px;
+  background: url(./images/icons8-gears-100.png) no-repeat center center;
+  background-size: contain;
+  /* object-fit: fill; */
+  border: none;
+  opacity: 0.6;
+  cursor: pointer;
+  transition: opacity 0.1s;
+}
+
+.button:hover {
+  opacity: 0.3;
+}

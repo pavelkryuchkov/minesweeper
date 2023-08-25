@@ -1,0 +1,37 @@
+.button {
+  padding: 3px 15px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 19px;
+  color: #444343;
+  background-color: #d1d0d0;
+  border: solid 3px;
+  border-bottom-color: #b6b5b5;
+  border-right-color: #b6b5b5;
+  border-top-color: #ffffff;
+  border-left-color: #ffffff;
+  cursor: pointer;
+  transition: border 0.1s;
+}
+
+.button:active {
+  border-top-color: #b6b5b5;
+  border-left-color: #b6b5b5;
+  border-bottom-color: #ffffff;
+  border-right-color: #ffffff;
+}
+
+.button_dark {
+  color: #b6b5b5;
+  background-color: #444343;
+  border-bottom-color: #000000;
+  border-right-color: #000000;
+  border-top-color: #b6b5b5;
+  border-left-color: #b6b5b5;
+}
+
+.button_dark:active {
+  border-top-color: #000000;
+  border-left-color: #000000;
+  border-bottom-color: #b6b5b5;
+  border-right-color: #b6b5b5;
+}
