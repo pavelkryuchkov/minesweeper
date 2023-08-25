@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
 
 import {
-  createFieldArray,
-  copyField,
-  getNeighbors,
   addBombs,
-  openFieldCell,
-  openCells,
   checkGameStatus,
+  copyField,
+  createEmptyField,
+  getNeighbors,
+  openCell,
+  openCellsAround,
 } from './helpers';
 
 import Header from './components/Header/Header';
@@ -20,7 +19,7 @@ import Button from './components/Button/Button';
 import styles from './App.module.css';
 
 function App() {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState(false);
 
   const WIDTH = 9;
   const HEIGHT = 9;
@@ -28,10 +27,10 @@ function App() {
   const [fieldWidth, setFieldWidth] = useState(WIDTH);
   const [fieldHeight, setFieldHeight] = useState(HEIGHT);
   const [bombsCount, setBombsCount] = useState(BOMBS_COUNT);
-  const [field, setField] = useState(createFieldArray(fieldWidth, fieldHeight));
+  const [field, setField] = useState(createEmptyField(fieldWidth, fieldHeight));
 
   useEffect(() => {
-    setField(createFieldArray(fieldWidth, fieldHeight));
+    setField(createEmptyField(fieldWidth, fieldHeight));
     startNewGame();
   }, [fieldWidth, fieldHeight]);
 
@@ -76,7 +75,7 @@ function App() {
     setIsGameLost(false);
     setIsGameWon(false);
     setFlagsCount(0);
-    setField(createFieldArray(fieldWidth, fieldHeight));
+    setField(createEmptyField(fieldWidth, fieldHeight));
   }
 
   function handleClick(row, col) {
@@ -86,13 +85,12 @@ function App() {
     }
     if (!isGameStarted) {
       let newField = addBombs(field, bombsCount, [row, col]);
-      newField = openFieldCell(newField, row, col);
+      newField = openCell(newField, row, col);
       setField(newField);
       setIsGameStarted(true);
     } else {
-      const newField = openFieldCell(field, row, col);
+      const newField = openCell(field, row, col);
       const status = checkGameStatus(newField);
-      console.log(status);
       if (status === 'lost') {
         setIsGameLost(true);
       } else if (status === 'won') {
@@ -108,17 +106,7 @@ function App() {
       return;
     }
 
-    const neighbors = getNeighbors(cell, field);
-    const flaggedCells = neighbors.filter((cell) => cell.isFlagged);
-    if (flaggedCells.length !== cell.value) {
-      return;
-    }
-    const cellsToOpen = neighbors.filter(
-      (cell) => !cell.isFlagged && !cell.isOpen
-    );
-    // console.log(cellsToOpen);
-
-    const newField = openCells(field, cellsToOpen);
+    const newField = openCellsAround(field, row, col);
     const status = checkGameStatus(newField);
     if (status === 'lost') {
       setIsGameLost(true);

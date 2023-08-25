@@ -2,8 +2,8 @@ import Cell from '../Cell/Cell';
 import styles from './styles.module.css';
 
 const CELL_SIZE = {
-  small: '25px',
-  medium: '30px',
+  small: '30px',
+  medium: '32px',
   large: '45px',
 };
 
@@ -28,14 +28,10 @@ function Board({
           {row.map((cell, colNum) => (
             <Cell
               key={colNum}
-              value={cell.value}
-              isOpen={cell.isOpen}
-              isFlagged={cell.isFlagged}
+              cell={cell}
               handleClick={handleClick}
               handleDoubleClick={handleDoubleClick}
               handleRightClick={handleRightClick}
-              row={rowNum}
-              col={colNum}
               size={cellSize}
               isDark={isDark}
             />

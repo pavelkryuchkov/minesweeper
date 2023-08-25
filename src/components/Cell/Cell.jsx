@@ -12,11 +12,7 @@ const COLORS = {
 };
 
 function Cell({
-  value,
-  isOpen,
-  isFlagged,
-  row,
-  col,
+  cell,
   handleClick,
   handleDoubleClick,
   handleRightClick,
@@ -28,25 +24,31 @@ function Cell({
     height: size,
   };
   let displayValue = '';
-  if (isOpen && value !== 0 && value !== 'bomb') {
-    style.color = COLORS[value];
-    displayValue = value;
+  if (cell.isOpen && cell.value !== 0 && cell.value !== 'bomb') {
+    style.color = COLORS[cell.value];
+    displayValue = cell.value;
   }
   let className = styles.cell;
   if (isDark) {
     className += ' ' + styles.cell_dark;
   }
-  if (isOpen) {
+  if (cell.isOpen) {
     className += ' ' + styles.cell__open;
   }
-  if (isOpen && isDark) {
+  if (cell.isOpen && isDark) {
     className += ' ' + styles.cell__open_dark;
   }
-  if (isOpen && value === 'bomb') {
+  if (cell.isOpen && cell.value === 'bomb') {
     className += ' ' + styles.cell__bomb;
   }
-  if (!isOpen && isFlagged) {
+  if (cell.isOpen && cell.isErrorBomb) {
+    className += ' ' + styles.cell__bomb_error;
+  }
+  if (!cell.isOpen && cell.isFlagged) {
     className += ' ' + styles.cell__flagged;
+  }
+  if (!cell.isOpen && cell.isErrorFlag) {
+    className += ' ' + styles.cell__flagged_error;
   }
   return (
     <button
@@ -54,15 +56,16 @@ function Cell({
       style={style}
       onClick={(e) => {
         if (e.buttons === 0) {
-          handleClick(row, col);
+          handleClick(cell.row, cell.col);
         } else if (e.buttons === 2) {
-          handleDoubleClick(row, col);
+          handleDoubleClick(cell.row, cell.col);
         }
       }}
       onContextMenu={(e) => {
         e.preventDefault();
-        handleRightClick(row, col);
+        handleRightClick(cell.row, cell.col);
       }}
+      // onMouseDown={(e) => console.log(e)}
     >
       {displayValue}
     </button>
