@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { getNeighbors } from '../../helpers';
 import Cell from '../Cell/Cell';
 import styles from './styles.module.css';
@@ -17,7 +17,10 @@ function Board({
   isDark,
 }) {
   const [selectedCells, setSelectedCells] = useState([]);
-  function onMouseDown(event, cell) {
+  const onMouseDown = useCallback((event, cell) => {
+    if (cell.isFlagged) {
+      return;
+    }
     if (event.buttons === 1) {
       setSelectedCells([cell]);
     } else if (event.buttons === 3) {
@@ -34,7 +37,8 @@ function Board({
       },
       { once: true }
     );
-  }
+  });
+
   const fieldWidth = field[0].length;
   const cellSize =
     fieldWidth < 16

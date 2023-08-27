@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
 
 import {
@@ -81,15 +81,15 @@ function App() {
     if (isGameLost || isGameWon) setIsMessageOpen(true);
   }, [isGameLost, isGameWon]);
 
-  function startNewGame() {
+  const startNewGame = useCallback(() => {
     setIsGameStarted(false);
     setIsGameLost(false);
     setIsGameWon(false);
     setFlagsCount(0);
     setField(createEmptyField(fieldWidth, fieldHeight));
-  }
+  });
 
-  function handleClick(row, col) {
+  const handleClick = useCallback((row, col) => {
     const cell = field[row][col];
     if (cell.isFlagged || cell.isOpen || isGameLost || isGameWon) {
       return;
@@ -109,9 +109,9 @@ function App() {
       }
       setField(newField);
     }
-  }
+  });
 
-  function handleDoubleClick(row, col) {
+  const handleDoubleClick = useCallback((row, col) => {
     const cell = field[row][col];
     if (!cell.isOpen || isGameLost || isGameWon) {
       return;
@@ -125,9 +125,9 @@ function App() {
       setIsGameWon(true);
     }
     setField(newField);
-  }
+  });
 
-  function handleRightClick(row, col) {
+  const handleRightClick = useCallback((row, col) => {
     const cell = field[row][col];
     if (cell.isOpen || isGameLost || isGameWon) {
       return;
@@ -140,7 +140,7 @@ function App() {
       setFlagsCount(flagsCount - 1);
     }
     setField(newField);
-  }
+  });
 
   return (
     <div className={`${styles.app} ${isDark ? styles.app_dark : ''}`}>
