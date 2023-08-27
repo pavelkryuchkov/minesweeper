@@ -2,12 +2,12 @@ import styles from './styles.module.css';
 
 const COLORS = {
   1: 'blue',
-  2: 'green',
+  2: 'forestgreen',
   3: 'red',
-  4: 'darkblue',
+  4: 'dodgerblue',
   5: 'brown',
-  6: 'orange',
-  7: 'pink',
+  6: 'peru',
+  7: 'deeppink',
   8: 'darkviolet',
 };
 
