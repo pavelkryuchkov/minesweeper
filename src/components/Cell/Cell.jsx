@@ -37,7 +37,7 @@ function Cell({
   if (cell.isOpen || isSelected) {
     className += ' ' + styles.cell__open;
   }
-  if (cell.isOpen && isDark) {
+  if ((cell.isOpen || isSelected) && isDark) {
     className += ' ' + styles.cell__open_dark;
   }
   if (cell.isOpen && cell.value === 'bomb') {
