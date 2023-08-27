@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import useLocalStorage from './hooks/useLocalStorage';
 
 import {
   addBombs,
@@ -18,15 +19,25 @@ import Button from './components/Button/Button';
 
 import styles from './App.module.css';
 
-function App() {
-  const [isDark, setIsDark] = useState(false);
+const DEFAULT_WIDTH = 9;
+const DEFAULT_HEIGHT = 9;
+const DEFAULT_BOMBS_COUNT = 10;
 
-  const WIDTH = 9;
-  const HEIGHT = 9;
-  const BOMBS_COUNT = 10;
-  const [fieldWidth, setFieldWidth] = useState(WIDTH);
-  const [fieldHeight, setFieldHeight] = useState(HEIGHT);
-  const [bombsCount, setBombsCount] = useState(BOMBS_COUNT);
+function App() {
+  const [isDark, setIsDark] = useLocalStorage('isDarkThemeOn', false);
+
+  const [fieldWidth, setFieldWidth] = useLocalStorage(
+    'fieldWidth',
+    DEFAULT_WIDTH
+  );
+  const [fieldHeight, setFieldHeight] = useLocalStorage(
+    'fieldHeight',
+    DEFAULT_HEIGHT
+  );
+  const [bombsCount, setBombsCount] = useLocalStorage(
+    'bombsCount',
+    DEFAULT_BOMBS_COUNT
+  );
   const [field, setField] = useState(createEmptyField(fieldWidth, fieldHeight));
 
   useEffect(() => {

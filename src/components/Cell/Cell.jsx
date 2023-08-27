@@ -13,9 +13,11 @@ const COLORS = {
 
 function Cell({
   cell,
+  isSelected,
   handleClick,
   handleDoubleClick,
   handleRightClick,
+  onMouseDown,
   size,
   isDark,
 }) {
@@ -32,7 +34,7 @@ function Cell({
   if (isDark) {
     className += ' ' + styles.cell_dark;
   }
-  if (cell.isOpen) {
+  if (cell.isOpen || isSelected) {
     className += ' ' + styles.cell__open;
   }
   if (cell.isOpen && isDark) {
@@ -65,7 +67,7 @@ function Cell({
         e.preventDefault();
         handleRightClick(cell.row, cell.col);
       }}
-      // onMouseDown={(e) => console.log(e)}
+      onMouseDown={(e) => onMouseDown(e, cell)}
     >
       {displayValue}
     </button>

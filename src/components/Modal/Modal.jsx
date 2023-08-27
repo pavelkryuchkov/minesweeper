@@ -4,7 +4,11 @@ import styles from './styles.module.css';
 
 function Modal({ children, onClose, isDark }) {
   return createPortal(
-    <div className={styles.backdrop} onClick={onClose}>
+    <div
+      className={styles.backdrop}
+      onClick={onClose}
+      onContextMenu={(e) => e.preventDefault()}
+    >
       <div
         className={`${styles.modal} ${isDark ? styles.modal_dark : ''}`}
         onClick={(e) => e.stopPropagation()}
