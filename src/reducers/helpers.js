@@ -67,14 +67,15 @@ function addBombs(field, bombsCount, [excludeRow, excludeCol]) {
   const newField = copyField(field);
   const height = newField.length;
   const width = newField[0].length;
+  const neighbors = getNeighbors(newField[excludeRow][excludeCol], newField);
+  const exclude = neighbors
+    .map((cell) => cell.row * width + cell.col)
+    .concat(excludeRow * width + excludeCol);
   const bombs = [];
 
   while (bombs.length < bombsCount) {
     const newBomb = getRandomInt(width * height);
-    if (
-      !bombs.includes(newBomb) &&
-      newBomb !== excludeRow * width + excludeCol
-    ) {
+    if (!bombs.includes(newBomb) && !exclude.includes(newBomb)) {
       bombs.push(newBomb);
       const cell = newField[Math.floor(newBomb / width)][newBomb % width];
       cell.value = 'bomb';
