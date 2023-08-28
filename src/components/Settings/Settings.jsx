@@ -1,23 +1,21 @@
+import { changeLevelAction } from '../../reducers/boardStateReducer';
+
 import Button from '../../components/Button/Button';
 
 import styles from './styles.module.css';
 
 function Settings({
-  setFieldWidth,
-  setFieldHeight,
-  setBombsCount,
+  dispatchBoardAction,
+  isDark,
   setIsSettingsOpen,
   setIsDark,
-  isDark,
 }) {
   return (
     <div className={styles.settings}>
       <Button
         title="Лёгкий уровень"
         onClick={() => {
-          setFieldWidth(9);
-          setFieldHeight(9);
-          setBombsCount(10);
+          dispatchBoardAction(changeLevelAction('easy'));
           setIsSettingsOpen(false);
         }}
         isDark={isDark}
@@ -25,9 +23,7 @@ function Settings({
       <Button
         title="Средний уровень"
         onClick={() => {
-          setFieldWidth(16);
-          setFieldHeight(16);
-          setBombsCount(40);
+          dispatchBoardAction(changeLevelAction('medium'));
           setIsSettingsOpen(false);
         }}
         isDark={isDark}
@@ -35,9 +31,7 @@ function Settings({
       <Button
         title="Сложный уровень"
         onClick={() => {
-          setFieldWidth(30);
-          setFieldHeight(16);
-          setBombsCount(99);
+          dispatchBoardAction(changeLevelAction('hard'));
           setIsSettingsOpen(false);
         }}
         isDark={isDark}

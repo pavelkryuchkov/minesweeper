@@ -1,3 +1,8 @@
+import {
+  openCellAction,
+  openCellsAroundAction,
+  putFlagAction,
+} from '../../reducers/boardStateReducer';
 import styles from './styles.module.css';
 
 const COLORS = {
@@ -13,13 +18,11 @@ const COLORS = {
 
 function Cell({
   cell,
-  isSelected,
-  handleClick,
-  handleDoubleClick,
-  handleRightClick,
-  onMouseDown,
-  size,
+  dispatchBoardAction,
+  handleMouseDown,
   isDark,
+  isSelected,
+  size,
 }) {
   let style = {
     width: size,
@@ -30,6 +33,7 @@ function Cell({
     style.color = COLORS[cell.value];
     displayValue = cell.value;
   }
+
   let className = styles.cell;
   if (isDark) {
     className += ' ' + styles.cell_dark;
@@ -52,22 +56,23 @@ function Cell({
   if (!cell.isOpen && cell.isErrorFlag) {
     className += ' ' + styles.cell__flagged_error;
   }
+
   return (
     <button
       className={className}
       style={style}
       onClick={(e) => {
         if (e.buttons === 0) {
-          handleClick(cell.row, cell.col);
+          dispatchBoardAction(openCellAction(cell.row, cell.col));
         } else if (e.buttons === 2) {
-          handleDoubleClick(cell.row, cell.col);
+          dispatchBoardAction(openCellsAroundAction(cell.row, cell.col));
         }
       }}
       onContextMenu={(e) => {
         e.preventDefault();
-        handleRightClick(cell.row, cell.col);
+        dispatchBoardAction(putFlagAction(cell.row, cell.col));
       }}
-      onMouseDown={(e) => onMouseDown(e, cell)}
+      onMouseDown={(e) => handleMouseDown(e, cell)}
     >
       {displayValue}
     </button>

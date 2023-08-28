@@ -1,15 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useReducer, useState } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
-
+import useTimer from './hooks/useTimer';
 import {
-  addBombs,
-  checkGameStatus,
-  copyField,
-  createEmptyField,
-  getNeighbors,
-  openCell,
-  openCellsAround,
-} from './helpers';
+  boardStateReducer,
+  initializer,
+  startNewGameAction,
+} from './reducers/boardStateReducer';
 
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
@@ -19,152 +15,55 @@ import Button from './components/Button/Button';
 
 import styles from './App.module.css';
 
-const DEFAULT_WIDTH = 9;
-const DEFAULT_HEIGHT = 9;
-const DEFAULT_BOMBS_COUNT = 10;
-
 function App() {
   const [isDark, setIsDark] = useLocalStorage('isDarkThemeOn', false);
 
-  const [fieldWidth, setFieldWidth] = useLocalStorage(
-    'fieldWidth',
-    DEFAULT_WIDTH
+  const [boardState, dispatchBoardAction] = useReducer(
+    boardStateReducer,
+    {},
+    initializer
   );
-  const [fieldHeight, setFieldHeight] = useLocalStorage(
-    'fieldHeight',
-    DEFAULT_HEIGHT
-  );
-  const [bombsCount, setBombsCount] = useLocalStorage(
-    'bombsCount',
-    DEFAULT_BOMBS_COUNT
-  );
-  const [field, setField] = useState(createEmptyField(fieldWidth, fieldHeight));
-
   useEffect(() => {
-    setField(createEmptyField(fieldWidth, fieldHeight));
-    startNewGame();
-  }, [fieldWidth, fieldHeight]);
+    localStorage.setItem('boardState', JSON.stringify(boardState));
+  }, [boardState]);
+  const { field, level, flagsCount, isGameStarted, isGameLost, isGameWon } =
+    boardState;
 
-  const [isGameStarted, setIsGameStarted] = useState(false);
-  const [isGameLost, setIsGameLost] = useState(false);
-  const [isGameWon, setIsGameWon] = useState(false);
-  const [flagsCount, setFlagsCount] = useState(0);
-  const [time, setTime] = useState(0);
-  const [timeRunning, setTimeRunning] = useState(false);
-
+  const { time, startTimer, stopTimer, resetTimer } = useTimer('time');
   useEffect(() => {
     if (isGameStarted && !isGameLost && !isGameWon) {
-      setTimeRunning(true);
+      startTimer();
     } else if (isGameLost || isGameWon) {
-      setTimeRunning(false);
+      stopTimer();
     } else if (!isGameStarted) {
-      setTime(0);
-      setTimeRunning(false);
+      resetTimer();
     }
   }, [isGameStarted, isGameLost, isGameWon]);
 
-  useEffect(() => {
-    let interval;
-    if (timeRunning) {
-      interval = setInterval(() => {
-        setTime((prevTime) => prevTime + 100);
-      }, 100);
-    } else if (!timeRunning) {
-      clearInterval(interval);
-    }
-    return () => clearInterval(interval);
-  }, [timeRunning]);
-
   const [isMessageOpen, setIsMessageOpen] = useState(false);
-
   useEffect(() => {
     if (isGameLost || isGameWon) setIsMessageOpen(true);
   }, [isGameLost, isGameWon]);
-
-  const startNewGame = useCallback(() => {
-    setIsGameStarted(false);
-    setIsGameLost(false);
-    setIsGameWon(false);
-    setFlagsCount(0);
-    setField(createEmptyField(fieldWidth, fieldHeight));
-  });
-
-  const handleClick = useCallback((row, col) => {
-    const cell = field[row][col];
-    if (cell.isFlagged || cell.isOpen || isGameLost || isGameWon) {
-      return;
-    }
-    if (!isGameStarted) {
-      let newField = addBombs(field, bombsCount, [row, col]);
-      newField = openCell(newField, row, col);
-      setField(newField);
-      setIsGameStarted(true);
-    } else {
-      const newField = openCell(field, row, col);
-      const status = checkGameStatus(newField);
-      if (status === 'lost') {
-        setIsGameLost(true);
-      } else if (status === 'won') {
-        setIsGameWon(true);
-      }
-      setField(newField);
-    }
-  });
-
-  const handleDoubleClick = useCallback((row, col) => {
-    const cell = field[row][col];
-    if (!cell.isOpen || isGameLost || isGameWon) {
-      return;
-    }
-
-    const newField = openCellsAround(field, row, col);
-    const status = checkGameStatus(newField);
-    if (status === 'lost') {
-      setIsGameLost(true);
-    } else if (status === 'won') {
-      setIsGameWon(true);
-    }
-    setField(newField);
-  });
-
-  const handleRightClick = useCallback((row, col) => {
-    const cell = field[row][col];
-    if (cell.isOpen || isGameLost || isGameWon) {
-      return;
-    }
-    const newField = copyField(field);
-    newField[row][col].isFlagged = !newField[row][col].isFlagged;
-    if (newField[row][col].isFlagged) {
-      setFlagsCount(flagsCount + 1);
-    } else {
-      setFlagsCount(flagsCount - 1);
-    }
-    setField(newField);
-  });
 
   return (
     <div className={`${styles.app} ${isDark ? styles.app_dark : ''}`}>
       <div className={styles.game}>
         <Header
-          bombsCount={bombsCount}
+          dispatchBoardAction={dispatchBoardAction}
           flagsCount={flagsCount}
-          time={time}
-          onNewGame={startNewGame}
           isDark={isDark}
+          level={level}
+          time={time}
         />
         <Board
+          dispatchBoardAction={dispatchBoardAction}
           field={field}
-          handleClick={handleClick}
-          handleDoubleClick={handleDoubleClick}
-          handleRightClick={handleRightClick}
           isDark={isDark}
         />
         <Footer
-          setFieldHeight={setFieldHeight}
-          setFieldWidth={setFieldWidth}
-          setBombsCount={setBombsCount}
-          setIsDark={setIsDark}
+          dispatchBoardAction={dispatchBoardAction}
           isDark={isDark}
+          setIsDark={setIsDark}
         />
         {isMessageOpen && (
           <Modal onClose={() => setIsMessageOpen(false)} isDark={isDark}>
@@ -175,8 +74,8 @@ function App() {
             <Button
               title="Сыграть ещё"
               onClick={() => {
+                dispatchBoardAction(startNewGameAction());
                 setIsMessageOpen(false);
-                startNewGame();
               }}
               isDark={isDark}
             />

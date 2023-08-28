@@ -9,15 +9,10 @@ const CELL_SIZE = {
   large: '45px',
 };
 
-function Board({
-  field,
-  handleClick,
-  handleDoubleClick,
-  handleRightClick,
-  isDark,
-}) {
+function Board({ dispatchBoardAction, field, isDark }) {
   const [selectedCells, setSelectedCells] = useState([]);
-  const onMouseDown = useCallback((event, cell) => {
+
+  const handleMouseDown = useCallback((event, cell) => {
     if (cell.isFlagged) {
       return;
     }
@@ -46,21 +41,20 @@ function Board({
       : fieldWidth < 30
       ? CELL_SIZE.medium
       : CELL_SIZE.small;
+
   return (
     <div className={styles.board}>
       {field.map((row, rowNum) => (
         <div key={rowNum} className={styles.row}>
           {row.map((cell, colNum) => (
             <Cell
-              key={colNum}
               cell={cell}
-              isSelected={selectedCells.includes(cell)}
-              handleClick={handleClick}
-              handleDoubleClick={handleDoubleClick}
-              handleRightClick={handleRightClick}
-              onMouseDown={onMouseDown}
-              size={cellSize}
+              dispatchBoardAction={dispatchBoardAction}
+              handleMouseDown={handleMouseDown}
               isDark={isDark}
+              isSelected={selectedCells.includes(cell)}
+              key={colNum}
+              size={cellSize}
             />
           ))}
         </div>
