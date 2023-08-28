@@ -26,6 +26,7 @@ function useTimer(key, defaultValue = 0) {
   });
 
   const resetTimer = useCallback(() => {
+    setTimeRunning(false);
     setTime(0);
   });
 

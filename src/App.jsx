@@ -1,23 +1,21 @@
 import { useEffect, useReducer, useState } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
 import useTimer from './hooks/useTimer';
-import {
-  boardStateReducer,
-  initializer,
-  startNewGameAction,
-} from './reducers/boardStateReducer';
+import { boardStateReducer, initializer } from './reducers/boardStateReducer';
 import { LEVELS, RESULTS_LENGTH } from './constants';
 
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
 import Board from './components/Board/Board';
-import Modal from './components/Modal/Modal';
-import Button from './components/Button/Button';
+import Footer from './components/Footer/Footer';
+import GameEndMessage from './components/GameEndMessage/GameEndMessage';
+import Header from './components/Header/Header';
 
 import styles from './App.module.css';
 
 function App() {
-  const [isDark, setIsDark] = useLocalStorage('isDarkThemeOn', false);
+  const [isDarkThemeOn, setIsDarkThemeOn] = useLocalStorage(
+    'isDarkThemeOn',
+    false
+  );
 
   const [boardState, dispatchBoardAction] = useReducer(
     boardStateReducer,
@@ -65,41 +63,37 @@ function App() {
   }, [isGameLost, isGameWon]);
 
   return (
-    <div className={`${styles.app} ${isDark ? styles.app_dark : ''}`}>
+    <div className={`${styles.app} ${isDarkThemeOn ? styles.app_dark : ''}`}>
       <div className={styles.game}>
         <Header
           dispatchBoardAction={dispatchBoardAction}
           flagsCount={flagsCount}
-          isDark={isDark}
+          isDark={isDarkThemeOn}
           level={level}
           time={time}
         />
         <Board
           dispatchBoardAction={dispatchBoardAction}
           field={field}
-          isDark={isDark}
+          isDark={isDarkThemeOn}
+          isGameLost={isGameLost}
+          isGameWon={isGameWon}
         />
         <Footer
           bestResults={bestResults}
           dispatchBoardAction={dispatchBoardAction}
-          isDark={isDark}
-          setIsDark={setIsDark}
+          isDark={isDarkThemeOn}
+          setIsDark={setIsDarkThemeOn}
         />
         {isMessageOpen && (
-          <Modal onClose={() => setIsMessageOpen(false)} isDark={isDark}>
-            {isGameLost && <p>Вы проиграли. Попробуйте ещё раз!</p>}
-            {isGameWon && (
-              <p>Вы выиграли! Вы нашли все мины за {time / 1000} сек.</p>
-            )}
-            <Button
-              title="Сыграть ещё"
-              onClick={() => {
-                dispatchBoardAction(startNewGameAction());
-                setIsMessageOpen(false);
-              }}
-              isDark={isDark}
-            />
-          </Modal>
+          <GameEndMessage
+            dispatchBoardAction={dispatchBoardAction}
+            isDark={isDarkThemeOn}
+            isGameLost={isGameLost}
+            isGameWon={isGameWon}
+            setIsMessageOpen={setIsMessageOpen}
+            time={time}
+          />
         )}
       </div>
     </div>

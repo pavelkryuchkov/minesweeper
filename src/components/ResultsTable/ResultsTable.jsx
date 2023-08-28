@@ -21,13 +21,19 @@ function ResultsTable({ results }) {
             <tr key={place} className={styles.tr}>
               <td className={styles.td}>{`${place}.`}</td>
               <td className={styles.td}>
-                {results[LEVELS[0]][place - 1] / 1000 || ''}
+                {results[LEVELS[0]][place - 1]
+                  ? results[LEVELS[0]][place - 1] / 1000 + ' cек.'
+                  : ''}
               </td>
               <td className={styles.td}>
-                {results[LEVELS[1]][place - 1] / 1000 || ''}
+                {results[LEVELS[1]][place - 1]
+                  ? results[LEVELS[1]][place - 1] / 1000 + ' cек.'
+                  : ''}
               </td>
               <td className={styles.td}>
-                {results[LEVELS[2]][place - 1] / 1000 || ''}
+                {results[LEVELS[2]][place - 1]
+                  ? results[LEVELS[2]][place - 1] / 1000 + ' cек.'
+                  : ''}
               </td>
             </tr>
           ))}

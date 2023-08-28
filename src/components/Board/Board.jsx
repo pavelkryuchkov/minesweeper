@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { getNeighbors } from '../../helpers';
+import { getNeighbors } from '../../reducers/helpers';
 import Cell from '../Cell/Cell';
 import styles from './styles.module.css';
 
@@ -9,11 +9,19 @@ const CELL_SIZE = {
   large: '45px',
 };
 
-function Board({ dispatchBoardAction, field, isDark }) {
+function Board({ dispatchBoardAction, field, isDark, isGameLost, isGameWon }) {
   const [selectedCells, setSelectedCells] = useState([]);
 
+  const fieldWidth = field[0].length;
+  const cellSize =
+    fieldWidth < 16
+      ? CELL_SIZE.large
+      : fieldWidth < 30
+      ? CELL_SIZE.medium
+      : CELL_SIZE.small;
+
   const handleMouseDown = useCallback((event, cell) => {
-    if (cell.isFlagged) {
+    if (cell.isFlagged || isGameLost || isGameWon) {
       return;
     }
     if (event.buttons === 1) {
@@ -33,14 +41,6 @@ function Board({ dispatchBoardAction, field, isDark }) {
       { once: true }
     );
   });
-
-  const fieldWidth = field[0].length;
-  const cellSize =
-    fieldWidth < 16
-      ? CELL_SIZE.large
-      : fieldWidth < 30
-      ? CELL_SIZE.medium
-      : CELL_SIZE.small;
 
   return (
     <div className={styles.board}>

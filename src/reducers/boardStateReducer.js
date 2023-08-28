@@ -6,7 +6,7 @@ import {
   getNeighbors,
   openCell,
   openCellsAround,
-} from '../helpers';
+} from './helpers';
 import { LEVELS, BOARD_PARAMS } from '../constants.js';
 
 const DEFAULT_LEVEL = LEVELS[0];
