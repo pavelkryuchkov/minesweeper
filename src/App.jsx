@@ -7,6 +7,7 @@ import { LEVELS, RESULTS_LENGTH } from './constants';
 import Board from './components/Board/Board';
 import Footer from './components/Footer/Footer';
 import GameEndMessage from './components/GameEndMessage/GameEndMessage';
+import GameSavedMessage from './components/GameSavedMessage/GameSavedMessage';
 import Header from './components/Header/Header';
 
 import styles from './App.module.css';
@@ -57,9 +58,19 @@ function App() {
     }
   }, [isGameWon]);
 
-  const [isMessageOpen, setIsMessageOpen] = useState(false);
+  const [isSavedGameMessageOpen, setIsSavedGameMessageOpen] = useState(false);
   useEffect(() => {
-    if (isGameLost || isGameWon) setIsMessageOpen(true);
+    window.addEventListener('load', () => {
+      if (isGameStarted) {
+        stopTimer();
+        setIsSavedGameMessageOpen(true);
+      }
+    });
+  });
+
+  const [isGameEndMessageOpen, setIsGameEndMessageOpen] = useState(false);
+  useEffect(() => {
+    if (isGameLost || isGameWon) setIsGameEndMessageOpen(true);
   }, [isGameLost, isGameWon]);
 
   return (
@@ -85,13 +96,21 @@ function App() {
           isDark={isDarkThemeOn}
           setIsDark={setIsDarkThemeOn}
         />
-        {isMessageOpen && (
+        {isSavedGameMessageOpen && (
+          <GameSavedMessage
+            dispatchBoardAction={dispatchBoardAction}
+            isDark={isDarkThemeOn}
+            setIsMessageOpen={setIsSavedGameMessageOpen}
+            startTimer={startTimer}
+          />
+        )}
+        {isGameEndMessageOpen && (
           <GameEndMessage
             dispatchBoardAction={dispatchBoardAction}
             isDark={isDarkThemeOn}
             isGameLost={isGameLost}
             isGameWon={isGameWon}
-            setIsMessageOpen={setIsMessageOpen}
+            setIsMessageOpen={setIsGameEndMessageOpen}
             time={time}
           />
         )}
