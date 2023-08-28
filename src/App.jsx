@@ -60,13 +60,11 @@ function App() {
 
   const [isSavedGameMessageOpen, setIsSavedGameMessageOpen] = useState(false);
   useEffect(() => {
-    window.addEventListener('load', () => {
-      if (isGameStarted) {
-        stopTimer();
-        setIsSavedGameMessageOpen(true);
-      }
-    });
-  });
+    if (isGameStarted) {
+      stopTimer();
+      setIsSavedGameMessageOpen(true);
+    }
+  }, []);
 
   const [isGameEndMessageOpen, setIsGameEndMessageOpen] = useState(false);
   useEffect(() => {
