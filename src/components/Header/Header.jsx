@@ -1,9 +1,7 @@
 import Button from '../Button/Button';
 import Display from '../Display/Display';
-import {
-  BOARD_PARAMS,
-  startNewGameAction,
-} from '../../reducers/boardStateReducer';
+import { startNewGameAction } from '../../reducers/boardStateReducer';
+import { BOARD_PARAMS } from '../../constants';
 import styles from './styles.module.css';
 
 function Header({ dispatchBoardAction, flagsCount, isDark, level, time }) {

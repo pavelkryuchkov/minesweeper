@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import useLocalStorage from './hooks/useLocalStorage';
 import useTimer from './hooks/useTimer';
 import {
@@ -6,6 +6,7 @@ import {
   initializer,
   startNewGameAction,
 } from './reducers/boardStateReducer';
+import { LEVELS, RESULTS_LENGTH } from './constants';
 
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
@@ -40,6 +41,24 @@ function App() {
     }
   }, [isGameStarted, isGameLost, isGameWon]);
 
+  const [bestResults, setBestResults] = useLocalStorage('bestResults', {
+    [LEVELS[0]]: [],
+    [LEVELS[1]]: [],
+    [LEVELS[2]]: [],
+  });
+  useEffect(() => {
+    if (isGameWon) {
+      const newResults = {
+        ...bestResults,
+        [level]: bestResults[level]
+          .concat(time)
+          .sort((a, b) => a - b)
+          .slice(0, RESULTS_LENGTH),
+      };
+      setBestResults(newResults);
+    }
+  }, [isGameWon]);
+
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   useEffect(() => {
     if (isGameLost || isGameWon) setIsMessageOpen(true);
@@ -61,6 +80,7 @@ function App() {
           isDark={isDark}
         />
         <Footer
+          bestResults={bestResults}
           dispatchBoardAction={dispatchBoardAction}
           isDark={isDark}
           setIsDark={setIsDark}

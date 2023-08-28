@@ -7,26 +7,9 @@ import {
   openCell,
   openCellsAround,
 } from '../helpers';
+import { LEVELS, BOARD_PARAMS } from '../constants.js';
 
-const DEFAULT_LEVEL = 'easy';
-export const BOARD_PARAMS = {
-  easy: {
-    width: 9,
-    height: 9,
-    bombsCount: 10,
-  },
-  medium: {
-    width: 16,
-    height: 16,
-    bombsCount: 40,
-  },
-  hard: {
-    width: 30,
-    height: 16,
-    bombsCount: 99,
-  },
-};
-
+const DEFAULT_LEVEL = LEVELS[0];
 const defaultState = {
   field: createEmptyField(
     BOARD_PARAMS[DEFAULT_LEVEL].width,

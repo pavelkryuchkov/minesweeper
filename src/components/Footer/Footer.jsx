@@ -4,9 +4,11 @@ import Modal from '../Modal/Modal';
 import Settings from '../Settings/Settings';
 
 import styles from './styles.module.css';
+import ResultsTable from '../ResultsTable/ResultsTable';
 
-function Footer({ dispatchBoardAction, isDark, setIsDark }) {
+function Footer({ bestResults, dispatchBoardAction, isDark, setIsDark }) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isResultsOpen, setIsResultsOpen] = useState(false);
   return (
     <footer className={`${styles.footer} ${isDark ? styles.footer_dark : ''}`}>
       <button
@@ -18,9 +20,15 @@ function Footer({ dispatchBoardAction, isDark, setIsDark }) {
           <Settings
             dispatchBoardAction={dispatchBoardAction}
             isDark={isDark}
+            setIsResultsOpen={setIsResultsOpen}
             setIsSettingsOpen={setIsSettingsOpen}
             setIsDark={setIsDark}
           />
+        </Modal>
+      )}
+      {isResultsOpen && (
+        <Modal onClose={() => setIsResultsOpen(false)} isDark={isDark}>
+          <ResultsTable results={bestResults} />
         </Modal>
       )}
     </footer>
